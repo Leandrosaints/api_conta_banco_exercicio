@@ -26,19 +26,32 @@ class ClientModel(banco.Model):
         return {
             'user_id':self.user_id,
             'login':self.login,
+            'senha':self.senha,
             'email':self.email,
             'cont_n':self.cont_n,
             'saldo':self.saldo
         }
     @classmethod
-    def find_cliente(cls, user_id):#essa func vai ser um classmethod, por isso nao herda self
-        user = cls.query.filter_by(user_id=user_id).first()
+    def find_by_login(cls, login):#essa func vai ser um classmethod, por isso nao herda self
+        user = cls.query.filter_by(login=login).first()
         if user:
             return user
         return None
     def save_user(self):
         banco.session.add(self)
         banco.session.commit()
+
+    def update_user(self, login, senha, email, cont_n, saldo):
+        self.login = login
+        self.senha = senha
+        self.email = email
+        self.cont_n = cont_n
+        self.saldo = saldo
+
+    def delete_user(self):
+        banco.session.delete(self)
+        banco.session.commit()
+    
     
     @classmethod 
     def find_user(cls, user_id):
@@ -62,6 +75,7 @@ class UserModel(banco.Model):
         return {
             'user_id':self.user_id,
             'login':self.login,
+            'senha':self.senha,
             'email':self.email,
             
         }
@@ -71,9 +85,10 @@ class UserModel(banco.Model):
         conn = sqlite3.connect('banco.db')
         cursor = conn.cursor()
         cursor.execute(f"SELECT * FROM usuarios WHERE ('{id}')")
-        for i in cursor.fetchall():
+        count = len(cursor.fetchall())
 
-            return i[0] 
+        if count:
+            return count
         conn.close()
 
     @classmethod 
@@ -95,7 +110,17 @@ class UserModel(banco.Model):
         if email:
             return email
         return None
+    
+    
     def save_user(self):
         banco.session.add(self)
         banco.session.commit()
     
+    
+    def update_user(self):
+        ...
+
+
+    def delete_user(self):
+        banco.session.delete(self)
+        banco.session.commit()
