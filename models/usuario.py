@@ -65,11 +65,13 @@ class UserModel(banco.Model):
     login = banco.Column(banco.String(40), nullable=False )
     senha = banco.Column(banco.String(40), nullable=False, unique=True)
     email = banco.Column(banco.String(80), nullable=False, unique=True)
-    def __init__(self,user_id, login, senha, email):
+    ativado = banco.Column(banco.Boolean, default=False)
+    def __init__(self,user_id, login, senha, email, ativado):
         self.user_id = user_id
         self.login = login
         self.senha = senha
         self.email = email
+        self.ativado = ativado
     def json(self):
 
         return {
@@ -77,6 +79,7 @@ class UserModel(banco.Model):
             'login':self.login,
             'senha':self.senha,
             'email':self.email,
+            'ativado':self.ativado
             
         }
     @classmethod
@@ -117,8 +120,11 @@ class UserModel(banco.Model):
         banco.session.commit()
     
     
-    def update_user(self):
-        ...
+    def update_user(self, nome, senha, email):
+        self.nome = nome
+        self.senha = senha
+        self.email = email
+        
 
 
     def delete_user(self):
